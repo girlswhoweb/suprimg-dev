@@ -1,9 +1,34 @@
-import { BlockStack, Button, Card, EmptyState, InlineGrid, LegacyCard, Spinner, Text } from "@shopify/polaris";
+import { BlockStack, Button, Card, EmptyState, InlineGrid, Text, Spinner, SkeletonDisplayText, SkeletonBodyText, Box } from "@shopify/polaris";
 import React, { useEffect, useState } from "react";
 import prettyBytes from "pretty-bytes";
 import { api } from "../api";
 import { useI18n } from "@shopify/react-i18n";
 import { useGadget } from "@gadgetinc/react-shopify-app-bridge";
+
+export const PreviewCardSkeleton = () => {
+  return (
+    <div className="preview-card cls-card-container">
+      <Card>
+        <BlockStack gap="400">
+          <InlineGrid columns="1fr auto">
+            <SkeletonDisplayText size="small" />
+            <Box width="100px" height="30px" background="bg-surface-active" borderRadius="100" />
+          </InlineGrid>
+          <Box paddingBlockStart="200">
+            <SkeletonBodyText lines={1} />
+          </Box>
+          <Box paddingBlockStart="200">
+            <SkeletonBodyText lines={1} />
+          </Box>
+          <div className="cls-image-container">
+            <Box paddingBlockStart="400" minHeight="250px" background="bg-surface-secondary" borderRadius="200" />
+          </div>
+        </BlockStack>
+      </Card>
+    </div>
+  );
+};
+
 
 export default function PreviewCard({ appSettings, setAppSettings }) {
   const [i18n] = useI18n({ id: "AppData"});
@@ -131,6 +156,10 @@ export default function PreviewCard({ appSettings, setAppSettings }) {
     ),
   ]);
 
+  if (loading) {
+    return <PreviewCardSkeleton />;
+  }
+
   return (
     <div className="preview-card">
       <Card
@@ -171,7 +200,6 @@ export default function PreviewCard({ appSettings, setAppSettings }) {
             </EmptyState>
           </div>
         )}
-        {!loading && (
           <>
             {previewProductId != "" && appSettings?.optimisationEnabled && (
               <div
@@ -196,13 +224,23 @@ export default function PreviewCard({ appSettings, setAppSettings }) {
               </div>
             )}
             {previewProductId != "" && previewImage && (
-              <img
-                src={previewImage}
-                style={{
-                  width: "100%",
-                  borderRadius: "var(--p-border-radius-2)",
-                }}
-              />
+              <div className="cls-image-container">
+                <img
+                  src={previewImage}
+                  alt="Watermarked preview"
+                  style={{
+                    borderRadius: "var(--p-border-radius-2)",
+                  }}
+                  loading="lazy"
+                  onLoad={(e) => {
+                    // Ensure image dimensions are stable
+                    e.target.style.opacity = '1';
+                  }}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
             )}
             {/* {previewProductId != "" && appSettings?.altTextEnabled && (
               <div style={{ marginTop: "5px" }}>
@@ -211,7 +249,6 @@ export default function PreviewCard({ appSettings, setAppSettings }) {
               </div>
             )} */}
           </>
-        )}
         {loading && previewProductId != "" && (
           <div
             style={{

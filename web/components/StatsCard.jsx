@@ -1,10 +1,38 @@
-import { Card, Text, BlockStack, InlineStack, Box, Grid, SkeletonDisplayText, Button } from "@shopify/polaris";
+import { Card, Text, BlockStack, InlineStack, Box, Grid, SkeletonDisplayText, Button, SkeletonBodyText } from "@shopify/polaris";
 import { api } from "../api";
 import { useFindFirst } from "@gadgetinc/react";
 import { useGadget } from "@gadgetinc/react-shopify-app-bridge";
 import { useEffect, useState } from "react";
 import { useI18n } from "@shopify/react-i18n";
 import { Modal, TitleBar } from "@shopify/app-bridge-react";
+
+export const StatsCardSkeleton = () => {
+  return (
+    <Card padding="0">
+      <Grid gap={{xs: "0", sm: "0", md: "0", lg: "0", xl: "0"}}>
+        <Grid.Cell columnSpan={{xs: 6, sm: 6, md: 6, lg: 6, xl: 6}}>
+          <Box padding="400" borderInlineEndWidth="0165" borderColor="border">
+            <BlockStack gap="200">
+              <SkeletonDisplayText size="small" />
+              <SkeletonBodyText lines={1} />
+            </BlockStack>
+          </Box>
+        </Grid.Cell>
+        <Grid.Cell columnSpan={{xs: 6, sm: 6, md: 6, lg: 6, xl: 6}}>
+          <Box padding="400">
+            <BlockStack gap="200">
+              <SkeletonDisplayText size="small" />
+              <InlineStack gap="200" align="start">
+                <SkeletonBodyText lines={1} />
+                <Box minWidth="80px" minHeight="36px" background="bg-surface-active" borderRadius="100" />
+              </InlineStack>
+            </BlockStack>
+          </Box>
+        </Grid.Cell>
+      </Grid>
+    </Card>
+  );
+};
 
 export default function StatsCard() {
   const [i18n] = useI18n({ id: "AppData" });
@@ -47,7 +75,9 @@ export default function StatsCard() {
     }
   };
 
-
+  if (fetching || isPaidUser === null) {
+    return <StatsCardSkeleton />;
+  }
   
   return (
     <Card padding="0">
@@ -57,7 +87,7 @@ export default function StatsCard() {
             <BlockStack gap="200">
               <Text variant="headingMd">Total Marked Images</Text>
               <Text variant="headingXl">
-                {fetching ? <SkeletonDisplayText /> : data.markedImagesCount}
+                {data.markedImagesCount}
               </Text>
             </BlockStack>
           </Box>

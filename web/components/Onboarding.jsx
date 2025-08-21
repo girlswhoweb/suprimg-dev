@@ -1,10 +1,51 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Text, BlockStack, Collapsible, Button, InlineStack, Icon, ProgressBar, Layout } from '@shopify/polaris';
+import { Card, Text, BlockStack, Collapsible, Button, InlineStack, Icon, ProgressBar, SkeletonDisplayText, SkeletonBodyText, Box } from '@shopify/polaris';
 import { CancelMinor, CircleTickMajor } from '@shopify/polaris-icons';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { useFindFirst } from '@gadgetinc/react';
 import { useGadget } from '@gadgetinc/react-shopify-app-bridge';
+
+export const OnboardingSkeleton = () => {
+  return (
+    <Card>
+      <BlockStack gap="400">
+        <InlineStack align="space-between" blockAlign="center" gap="300">
+          <Box width="200px">
+            <SkeletonDisplayText size="small" />
+          </Box>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: "flex-end", gap: '5px' }}>
+            <SkeletonDisplayText size="small" />
+            <Box paddingBlockStart="200" height="8px" width="150px" background="bg-surface-active" borderRadius="100" />
+          </div>
+          <Box width="20px" height="20px" background="bg-surface-active" borderRadius="100" />
+        </InlineStack>
+        <BlockStack gap="400">
+          {[0, 1, 2, 3].map((index) => (
+            <InlineStack key={index} blockAlign="start" gap="500">
+              <Box paddingInlineEnd="400">
+                <Box width="20px" height="20px" background="bg-surface-active" borderRadius="100" />
+                {index < 3 && (
+                  <Box width="2px" height="50px" background="bg-surface-active" marginTop="200" marginLeft="900" />
+                )}
+              </Box>
+              <BlockStack gap="200">
+                <SkeletonDisplayText size="small" />
+                <SkeletonBodyText lines={1} />
+                <Box paddingBlockStart="200">
+                  <InlineStack gap="200">
+                    <Box width="120px" height="36px" background="bg-surface-active" borderRadius="100" />
+                    <Box width="120px" height="36px" background="bg-surface-active" borderRadius="100" />
+                  </InlineStack>
+                </Box>
+              </BlockStack>
+            </InlineStack>
+          ))}
+        </BlockStack>
+      </BlockStack>
+    </Card>
+  );
+};
 
 export function Onboarding() {
   const { appBridge } = useGadget();
@@ -122,7 +163,11 @@ export function Onboarding() {
     });
   }
 
-  if(fetching || Object.keys(completedSteps).filter(stepKey => 
+  if(fetching) {
+    return <OnboardingSkeleton />;
+  }
+
+  if(Object.keys(completedSteps).filter(stepKey => 
     completedSteps[stepKey] === true && ['applyWatermark', 'disableRightClick', 'disableTextCopy', 'disableDev'].includes(stepKey)
   ).length === steps.length) {
     return null;

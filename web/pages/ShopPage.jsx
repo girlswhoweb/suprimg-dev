@@ -312,7 +312,8 @@ const ShopPage = () => {
         `}
       </style>
       <Frame>
-        <div style={(loading || fetching || !appSettings) ? { opacity: 0.5, pointerEvents: "none" } : { opacity: 1 }}>
+        <div className={`cls-loading-wrapper ${!loading && appSettings ? 'loaded' : ''}`}  style={(loading || fetching || !appSettings) ? { opacity: 0.5, pointerEvents: "none" } : { opacity: 1 }}>
+          <div className="cls-container">
           <Layout>
             {/* Header Section */}
             {processStatus?.state?.toUpperCase() === "LIMITED" && <Layout.Section>
@@ -350,7 +351,7 @@ const ShopPage = () => {
               setShowPricing={setShowPricing}
               processStatus={processStatus}
               setProcessStatus={setProcessStatus}
-              loading={loading || fetching || !appSettings}
+              loading={loading || !appSettings}
             />
             <SaveBar id="save-settings" open={appSettings?.isSaved !== true}>
               <button variant="primary" onClick={handleSave}>Save & Preview</button>
@@ -436,6 +437,7 @@ const ShopPage = () => {
             <Layout.Section></Layout.Section>
           </Layout>
           <Pricing open={showPricing} />
+        </div>
         </div>
         {toastMarkup}
       </Frame>

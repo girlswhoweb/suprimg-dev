@@ -40,6 +40,7 @@ export default function WelcomePage() {
 
   return (
     <Page narrowWidth>
+      <div className="cls-container">
       <Layout>
         <Layout.Section>
           <Card padding="400">
@@ -49,6 +50,7 @@ export default function WelcomePage() {
             </BlockStack>
           </Card>
         </Layout.Section>
+        <div className="cls-banner-container">
         {shopData?.markedImagesCount >= 10 && (
           <Layout.Section>
             <Banner title="Enjoying SuprImg?" tone="success">
@@ -71,6 +73,7 @@ export default function WelcomePage() {
             </Banner>
           </Layout.Section>
         )}
+        </div>
         <Layout.Section>
           <BlockStack gap="400">
             <Onboarding />
@@ -145,6 +148,7 @@ export default function WelcomePage() {
         <Layout.Section><HelpCard /></Layout.Section>
         <Layout.Section></Layout.Section>
       </Layout>
+    </div>
     </Page>
   )
 }

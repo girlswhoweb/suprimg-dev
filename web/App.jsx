@@ -12,6 +12,7 @@ import {
   useNavigate,
   Link,
 } from "react-router-dom";
+import { ShopPageSkeleton, WelcomePageSkeleton } from './components/SkeletonPage';
 
 // Lazy load components
 const WelcomePage = lazy(() => import("./pages/WelcomePage"));
@@ -41,12 +42,12 @@ function App() {
     createRoutesFromElements(
       <Route path="/" element={<Layout />}>
         <Route index element={
-          <Suspense fallback={<div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}><Spinner /></div>}>
+          <Suspense fallback={<WelcomePageSkeleton />}>
             <WelcomePage />
           </Suspense>
         } />
         <Route path="/watermark" element={
-          <Suspense fallback={<div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}><Spinner /></div>}>
+          <Suspense fallback={<ShopPageSkeleton />}>
             <ShopPage />
           </Suspense>
         } />
